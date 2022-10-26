@@ -1,25 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+import { Worker, Viewer } from "@react-pdf-viewer/core";
+import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+import "@react-pdf-viewer/core/lib/styles/index.css";
+import "@react-pdf-viewer/default-layout/lib/styles/index.css";
+import demoFile from "./demo.pdf";
 
-function App() {
+export default function App() {
+  const renderToolbar = (Toolbar) => (
+    <Toolbar>
+      {(slots) => {
+        const { ZoomOut } = slots;
+        return (
+          <div
+            style={{
+              alignItems: "center",
+              display: "flex",
+            }}
+          >
+            <div style={{ padding: "0px 2px" }}>
+              <ZoomOut>
+                {(props) => (
+                  <button
+                    style={{
+                      backgroundColor: "#357edd",
+                      border: "none",
+                      borderRadius: "4px",
+                      color: "#ffffff",
+                      cursor: "pointer",
+                      padding: "8px",
+                    }}
+                    onClick={props.onClick}
+                  >
+                    Zoom out
+                  </button>
+                )}
+              </ZoomOut>
+            </div>
+            ...
+          </div>
+        );
+      }}
+    </Toolbar>
+  );
+
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.min.js">
+      <div style={{ height: "720px" }}>
+        <Viewer fileUrl={demoFile} plugins={[defaultLayoutPluginInstance]} />
+      </div>
+    </Worker>
   );
 }
-
-export default App;
